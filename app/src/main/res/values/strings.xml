@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">FactorialTest</string>
+    <string name="app_name">Factorial Test</string>
+    <string name="calculate">Calculate</string>
+    <string name="enter_number">Enter number</string>
 </resources>
