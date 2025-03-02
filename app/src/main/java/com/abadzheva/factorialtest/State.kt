@@ -1,10 +1,10 @@
 package com.abadzheva.factorialtest
 
-open class State
+sealed class State
 
-class Error : State()
+data object Error : State()
 
-class Progress : State()
+data object Progress : State()
 
 class Result(
     val factorial: String,
