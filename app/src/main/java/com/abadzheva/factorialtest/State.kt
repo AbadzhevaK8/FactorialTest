@@ -6,6 +6,6 @@ data object Error : State()
 
 data object Progress : State()
 
-class Result(
-    val factorial: String,
+class Factorial(
+    val value: String,
 ) : State()

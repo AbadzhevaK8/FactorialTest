@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.math.BigInteger
 
 class MainViewModel : ViewModel() {
     private val _state = MutableLiveData<State>()
@@ -20,15 +23,27 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             val number = inputValue.toLong()
             val result = factorial(number)
-            _state.value = Result(result.toString())
+            _state.value = Factorial(result)
         }
     }
 
-    private fun factorial(number: Long): Long {
-        var result = 1L
-        for (i in 1..number) {
-            result *= i
+    private suspend fun factorial(number: Long): String =
+        withContext(Dispatchers.Default) {
+            var result = BigInteger.ONE
+            for (i in 1..number) {
+                result = result.multiply(BigInteger.valueOf(i))
+            }
+            result.toString()
         }
-        return result
-    }
+
+//    private suspend fun factorial(number: Long): String =
+//        suspendCoroutine {
+//            thread {
+//                var result = BigInteger.ONE
+//                for (i in 1..number) {
+//                    result = result.multiply(BigInteger.valueOf(i))
+//                }
+//                it.resumeWith(Result.success(result.toString()))
+//            }
+//        }
 }
