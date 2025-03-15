@@ -1,0 +1,37 @@
+@startuml
+
+class MainActivity {
+    - ActivityMainBinding binding
+    - MainViewModel viewModel
+    + onCreate(savedInstanceState: Bundle?)
+    - observeViewModel()
+}
+
+class MainViewModel {
+    - CoroutineScope coroutineScope
+    - MutableLiveData<State> _state
+    + LiveData<State> state
+    + calculate(inputValue: String?)
+    - suspend factorial(number: Long): String
+    + onCleared()
+}
+
+class State
+
+class Error {
+}
+class Progress {
+}
+class Factorial {
+    + String value
+}
+
+State <|-- Error
+State <|-- Progress
+State <|-- Factorial
+
+MainActivity -> MainViewModel : observes state
+
+MainViewModel -> State : updates _state
+
+@enduml
