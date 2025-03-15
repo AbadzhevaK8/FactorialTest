@@ -1,15 +1,19 @@
 package com.abadzheva.factorialtest
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 
 class MainViewModel : ViewModel() {
+    private val coroutineScope = CoroutineScope(CoroutineName("MyScope"))
     private val _state = MutableLiveData<State>()
     val state: LiveData<State>
         get() = _state
@@ -20,13 +24,14 @@ class MainViewModel : ViewModel() {
             _state.value = Error
             return
         }
-        viewModelScope.launch {
+        coroutineScope.launch(Dispatchers.Main) {
             val number = inputValue.toLong()
             val result =
                 withContext(Dispatchers.Default) {
                     factorial(number)
                 }
             _state.value = Factorial(result)
+            Log.d("MainViewModel", coroutineContext.toString())
         }
     }
 
@@ -48,4 +53,9 @@ class MainViewModel : ViewModel() {
 //                it.resumeWith(Result.success(result.toString()))
 //            }
 //        }
+
+    override fun onCleared() {
+        super.onCleared()
+        coroutineScope.cancel()
+    }
 }
